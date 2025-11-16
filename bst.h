@@ -247,7 +247,8 @@ protected:
     virtual void nodeSwap( Node<Key,Value>* n1, Node<Key,Value>* n2) ;
 
     // Add helper functions here
-
+    static Node<Key, Value>* successor(Node<Key, Value>* current);
+    int BalanceHelper(Node<key,Value>* Current) const;
 
 protected:
     Node<Key, Value>* root_;
@@ -267,6 +268,7 @@ template<class Key, class Value>
 BinarySearchTree<Key, Value>::iterator::iterator(Node<Key,Value> *ptr)
 {
     // TODO
+    current_ = ptr;
 }
 
 /**
@@ -276,7 +278,7 @@ template<class Key, class Value>
 BinarySearchTree<Key, Value>::iterator::iterator() 
 {
     // TODO
-
+    current_ = NULL;
 }
 
 /**
@@ -309,6 +311,7 @@ BinarySearchTree<Key, Value>::iterator::operator==(
     const BinarySearchTree<Key, Value>::iterator& rhs) const
 {
     // TODO
+    return(current_ == rhs.current_);
 }
 
 /**
@@ -321,7 +324,7 @@ BinarySearchTree<Key, Value>::iterator::operator!=(
     const BinarySearchTree<Key, Value>::iterator& rhs) const
 {
     // TODO
-
+    return(current_ != rhs.current_);
 }
 
 
@@ -333,7 +336,11 @@ typename BinarySearchTree<Key, Value>::iterator&
 BinarySearchTree<Key, Value>::iterator::operator++()
 {
     // TODO
-
+    if(current_ != NULL)
+    {
+        current_ = successor(current_);
+    }
+    return *this;
 }
 
 
@@ -356,13 +363,14 @@ template<class Key, class Value>
 BinarySearchTree<Key, Value>::BinarySearchTree() 
 {
     // TODO
+    root_ = NULL;
 }
 
 template<typename Key, typename Value>
 BinarySearchTree<Key, Value>::~BinarySearchTree()
 {
     // TODO
-
+    clear();
 }
 
 /**
@@ -445,6 +453,52 @@ template<class Key, class Value>
 void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &keyValuePair)
 {
     // TODO
+    if(root_ == NULL)
+    {
+        root_ = new Node<Key,Value>(keyValuePair.first, keyValuePair.second, NULL);
+
+    }
+    return;
+
+    Node<key,Value>* curr = root_;
+    Node<Key,Value>* parent = NULL;
+
+    //tree traversal
+    while(curr != NULL)
+    {
+        parent = curr;
+        //overwrite if already exist
+        if (keyValuePair.first == curr->getKey())
+        {
+            curr->setValue(keyValuePair.second);
+            return;
+        }
+        //left
+        else if (keyValuePair.first < curr->getKey())
+        {
+            curr = curr->getLeft();
+
+        }
+        //right
+        else{
+            curr = curr->getRight();
+        }
+    }
+
+    //create new node
+    Node<Key,Value>* newN = new Node<Key,Value>(keyValuePair.first, keyValuePair.second, parent);
+    if(parent == NULL)
+    {
+        root_ =newN;
+    }
+    else if (keyValuePair.first < parent->getKey())
+    {
+        parent->setLeft(newN);
+    }
+    else
+    {
+        parent->setRight(newN);
+    }
 }
 
 
