@@ -137,7 +137,8 @@ protected:
     virtual void nodeSwap( AVLNode<Key,Value>* n1, AVLNode<Key,Value>* n2);
 
     // Add helper functions here
-
+    void rotateRight(AVLNode<Key,Value>* m);
+    void rotateLeft(AVLNode<Key,Value>* m);
 
 };
 
@@ -149,6 +150,37 @@ template<class Key, class Value>
 void AVLTree<Key, Value>::insert (const std::pair<const Key, Value> &new_item)
 {
     // TODO
+    //base
+    if(this->root_ == NULL)
+    {
+      this->root = new AVLNode<Key,Value>(new_item->first, new_item->second, NULL);
+      return;
+    }
+
+    AVLNode<Key,Value>* curr = static_cast<AVLNode<Key,Value>*>(this->root_);
+    AVLNode<Key,Value>* parent = NULL;
+
+    //BST
+    while (curr != NULL)
+    {
+      parent = curr;
+      // overwrite if already exist
+      if (new_item.first == curr->getKey())
+      {
+        return;
+      }
+      //left
+      else if(new_item.first < curr->getKey())
+      {
+        curr = curr->getLeft();
+      }
+      //right
+      else
+      {
+        curr = curr->getRight();
+      }
+    }
+
 }
 
 /*
